@@ -7,12 +7,11 @@ import { handleValidationErrors, checkAuth } from './utils/index.js'
 import { UserController, PostController } from './controllers/index.js'
 
 mongoose
-    .connect('mongodb+srv://admin:wwwwww@cluster0.ez0gke8.mongodb.net/blog?retryWrites=true&w=majority')
+    .connect(process.env.MONGODB_URL)
     .then(() => console.log('DB OK'))
     .catch((err) => console.log('DB error', err))
 
 const app = express()
-const PORT = 4444
 
 const storage = multer.diskStorage({
     destination: (_, __, cb) => {
@@ -46,9 +45,9 @@ app.post('/posts', checkAuth, postCreateValidation, handleValidationErrors, Post
 app.delete('/posts/:id', checkAuth, PostController.remove)
 app.patch('/posts/:id', checkAuth, postCreateValidation, handleValidationErrors, PostController.update)
 
-app.listen(PORT, (err) => {
+app.listen(process.env.PORT || 4444, (err) => {
     if(err) {
         return console.log(err)
     }
-    console.log(`---------- SERVER STARTED ON PORT ${PORT} ----------`)
+    console.log(`---------- SERVER STARTED ON PORT ${process.env.PORT} ----------`)
 })
